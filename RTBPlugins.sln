@@ -5,6 +5,13 @@ VisualStudioVersion = 15.0.28307.438
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTBPlugins", "RTBPlugins\RTBPlugins.csproj", "{2762C834-6780-4151-8894-13735EAECE18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YourHeightPlugin", "YourHeightPlugin\YourHeightPlugin.csproj", "{06D7B8C7-6B40-4CF0-B71C-3472380684AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38AAF56B-681C-4F10-8AEE-0108CE9B38A4}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.txt = ReadMe.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +34,18 @@ Global
 		{2762C834-6780-4151-8894-13735EAECE18}.Release|x64.Build.0 = Release|x64
 		{2762C834-6780-4151-8894-13735EAECE18}.Release|x86.ActiveCfg = Release|x86
 		{2762C834-6780-4151-8894-13735EAECE18}.Release|x86.Build.0 = Release|x86
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Debug|x64.Build.0 = Debug|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Debug|x86.Build.0 = Debug|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Release|x64.ActiveCfg = Release|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Release|x64.Build.0 = Release|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Release|x86.ActiveCfg = Release|Any CPU
+		{06D7B8C7-6B40-4CF0-B71C-3472380684AC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
