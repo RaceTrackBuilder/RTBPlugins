@@ -20,16 +20,19 @@ namespace RTBPlugins
         Mask
     }
     /// <summary>
-    /// WARNING: THIS WILL CHANGE
-    /// Currently this is used to provide progress during the capturing of images. RTB Google Maps will call this every now and again 
-    /// to provide an updated image that will  be refreshed.
-    /// I will break this function into two, one for progress and one for Completion. Maybe even one for failure. brpbrp
+    /// Call this now and again if your capture takes a long time in order to provide progress during the capturing of images. 
+    /// RTB Google Maps will call this every now and again to provide an updated image that will be refreshed.
     /// </summary>
     /// <param name="imageType"></param>
-    /// <param name="complete"></param>
-    /// <param name="success"></param>
     /// <param name="percentage"></param>
-    public delegate void CompletedCallback(ImageType imageType, bool complete, bool success, float percentage);
+    public delegate void UpdateCallback(ImageType imageType, float percentage);
+
+    /// <summary>
+    /// Call this one the whole process is complete, or if it has failed.
+    /// </summary>
+    /// <param name="imageType"></param>
+    /// <param name="success">True if successful</param>
+    public delegate void CompletedCallback(bool success);
 
     /// <summary>
     /// Your Image Plugin may determine a new size for the Venue. If it does, this this callback function is used to upodate the Sliders on the New Venue screen.
@@ -67,7 +70,7 @@ namespace RTBPlugins
         /// </summary>
         /// <param name="map">Parameters that define the required image.</param>
         /// <param name="completedCallback">Callback function when image is complete.</param>
-        void Create(ImageMapInformation map, CompletedCallback completedCallback);
+        void Create(ImageMapInformation map, UpdateCallback updateCallback, CompletedCallback completedCallback);
 
         /// <summary>
         /// The user has changed the size of the Image they want to create. You may want to respond by updating some text on the settings panel.
