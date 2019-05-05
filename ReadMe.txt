@@ -7,5 +7,6 @@ This is my first Plugin project so I might be making a few mistakes, but so far 
 The RTBPluins Solution consists of:
 - RTBPlugins - defines the Interface from which all RTB plugins MUST be built.
 - YourHeightPlugin - example code on how to make a plugin to manipulate the height.
+- YourImagePlugin - example code to show a texture can be created.
 
 After the Plugin has been created, it must be copied to the Steam folder. In the YourHeightPlugin example project I have added an Post-Build evcnt to perform this copy to "C:\Program Files (x86)\Steam\steamapps\common\Race Track Builder\Plugins\Height\"; you may wish to alter this location if your Steam folder exists elsewhere.

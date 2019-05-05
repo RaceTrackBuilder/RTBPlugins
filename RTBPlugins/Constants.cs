@@ -13,7 +13,8 @@ namespace RTBPlugins
     {
         None = 0,
         AssettoCorsa = 1,
-        rFactor = 2
+        rFactor = 2,
+        All = 9999
     }
 
     /// <summary>
