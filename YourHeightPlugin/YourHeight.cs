@@ -1,6 +1,7 @@
 ﻿using RTBPlugins;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,11 +26,6 @@ namespace YourHeightPlugin
         /// The amount the height will be multiplied by in the GetWaveHeight function.
         /// </summary>
         float HeightMultiplier = 100;
-
-        /// <summary>
-        /// Filename of this Plugin.
-        /// </summary>
-        public string Filename { get; set; }
 
         public InputMethods InputMethod { get { return InputMethods.MetersXZ; } }
 
@@ -70,7 +66,7 @@ namespace YourHeightPlugin
 
         public void AcceptNewProjectSettings()
         {
-            // Save the settings.
+            // Save the Noise setting.
             ucNewProjectSettings.AcceptNewProjectSettings();
             Properties.Settings.Default.Save();
 
@@ -120,19 +116,35 @@ namespace YourHeightPlugin
         /// This is called when RTB Saves a project. Use it to store values that are specific to this project, that can then be reloaded via the Load() function.
         /// </summary>
         /// <param name="xml"></param>
-        public void Save(XmlTextWriter xml)
+        public void Save(string filename)
         {
-            // Save the user configurable and random settings.
-            xml.WriteElementString("HeightMultiplier", HeightMultiplier.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            // Replace existing file if it exists.
+            if (File.Exists(filename)) File.Delete(filename);
+
+            // Create new file.
+            using (FileStream fs = File.Create(filename))
+            {
+                using (BinaryWriter bw = new BinaryWriter(fs, Encoding.UTF8))
+                {
+                    bw.Write(HeightMultiplier);
+                }
+            }
         }
 
         /// <summary>
         /// This is called when RTB loads an existing project. Use it to load values specific to this project.
         /// </summary>
         /// <param name="xmlNode"></param>
-        public void Load(XmlNode xmlNode)
+        public void Load(string filename)
         {
-            HeightMultiplier = float.Parse(xmlNode["HeightMultiplier"].FirstChild.Value, System.Globalization.CultureInfo.InvariantCulture);
+            if (!File.Exists(filename)) return;
+            using (FileStream fs = File.OpenRead(filename))
+            {
+                using (BinaryReader br = new BinaryReader(fs, System.Text.Encoding.UTF8))
+                {
+                    HeightMultiplier = br.ReadSingle();
+                }
+            }
         }
     }
 }

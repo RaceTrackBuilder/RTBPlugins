@@ -11,8 +11,6 @@ namespace RTBPlugins
     /// </summary>
     public interface IPlugin
     {
-        string Filename { get; set; }
-
         /// <summary>
         /// Very brief description that will be displayed in RTB's Dropdown listboxes on the New Venue and Edit Venue screens.
         /// </summary>
@@ -75,18 +73,10 @@ namespace RTBPlugins
         List<GameEngines> GetSupportedEngines();
 
         /// <summary>
-        /// WARNING: THIS WILL PROBABLY CHANGE brpbrp
-        /// Save Venue specific settings. These settings are specific to the current project.
+        /// Load Venue specific settings from your own binary file. These settings are specific to the current project and will be stored inside a file named "[YourPluginName].bin".
+        /// ALSO Perform one-off actions here (such as loading data or initialise variables).
         /// </summary>
-        /// <param name="xml"></param>
-        void Save(XmlTextWriter xml);
-
-        /// <summary>
-        /// WARNING: THIS WILL PROBABLY CHANGE brpbrp
-        /// Load Venue specific settings. These settings are specific to the current project.
-        /// Perform one-off actions (such as loading data).
-        /// </summary>
-        /// <param name="xml"></param>
-        void Load(XmlNode xmlNode);
+        /// <param name="filename">Image plugins will be stored in RTBProject\Plugins\Image\[YourPluginName].bin. Height plugins it will be stored in RTBProject\Plugins\Height\[YourPluginName].bin.</param>
+        void Load(string filename);
     }
 }

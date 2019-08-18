@@ -19,11 +19,6 @@ namespace YourImagePlugin
         internal static bool Cancel = false;
 
         /// <summary>
-        /// Filename of this Plugin.
-        /// </summary>
-        public string Filename { get; set; }
-
-        /// <summary>
         /// This plugin will not modify the Assetto Corsa Mask.
         /// </summary>
         public bool CreatesAssettoCorsaMask { get { return false; } }
@@ -44,6 +39,7 @@ namespace YourImagePlugin
         public bool UsesLatitudeLongitude { get { return false; } }
         public double Latitude { get { return 0; } }
         public double Longitude { get { return 0; } }
+        public bool SupportsInterruptions { get { return false; } }
 
         public void SizeUpdated(int width, int height)
         {
@@ -56,7 +52,7 @@ namespace YourImagePlugin
             map.CoverageZ = map.CoverageX;
         }
 
-        public void Create(ImageMapInformation map, UpdateCallback updateCallback, CompletedCallback completedCallback)
+        public void Create(string xpacksFolder, ImageMapInformation map, UpdateCallback updateCallback, CompletedCallback completedCallback)
         {
             IsFetchingData = true;
             Cancel = false;
@@ -64,9 +60,7 @@ namespace YourImagePlugin
             try
             {
                 // Create the Main texture.
-                CreateTexture(map);
-                //brp if (!Cancel) updateCallback?.Invoke(ImageType.Main, 100); // Main texture is now Complete.
-
+                CreateTexture(xpacksFolder, map);
                 if (!Cancel) completedCallback?.Invoke(true);
             }
             catch
@@ -77,15 +71,20 @@ namespace YourImagePlugin
             IsFetchingData = false;
         }
 
-        private void CreateTexture(ImageMapInformation map)
+        public void Resume(string xpacksFolder, UpdateCallback updateCallback, CompletedCallback completedCallback)
+        {
+            // Interrupting is not supported so nothing to do here.
+        }
+
+        private void CreateTexture(string xpacksFolder, ImageMapInformation map)
         {
             SharpDX.Direct3D11.Device DX11_Device = new SharpDX.Direct3D11.Device(SharpDX.Direct3D.DriverType.Hardware, DeviceCreationFlags.None);
             string filename = "", filenameIntermediate = "";
-
+            
             int width, height;
 
-            filename = map.Filename;
-            filenameIntermediate = map.FilenameIntermediate;
+            filename = Path.Combine(xpacksFolder, map.Filename);
+            filenameIntermediate = Path.Combine(xpacksFolder, map.FilenameIntermediate);
             width = map.Width;
             height = map.Height;
 
@@ -274,12 +273,12 @@ namespace YourImagePlugin
                 Thread.Sleep(50);
         }
 
-        public void Save(XmlTextWriter xml)
+        public void Save(string filename, bool exit)
         {
             // do nothing.
         }
 
-        public void Load(XmlNode xmlNode)
+        public void Load(string filename)
         {
             // do nothing.
         }

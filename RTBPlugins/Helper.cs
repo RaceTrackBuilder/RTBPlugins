@@ -104,7 +104,6 @@ namespace RTBPlugins
             }
             
             IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginTypes[0]);
-            plugin.Filename = Path.GetFileName(dllFile);
             return plugin;
         }
     }

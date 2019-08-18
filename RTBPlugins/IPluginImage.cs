@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -68,9 +69,22 @@ namespace RTBPlugins
         /// <summary>
         /// Create an image using the parameters passed in the map variable.
         /// </summary>
+        /// <param name="xpacksFolder">Xpacks folder where images are contained.</param>
         /// <param name="map">Parameters that define the required image.</param>
+        /// <param name="updateCallback">Callback function to show partial image as it is slowly being gathered. No need to do anything here if your plugin is fast.</param>
         /// <param name="completedCallback">Callback function when image is complete.</param>
-        void Create(ImageMapInformation map, UpdateCallback updateCallback, CompletedCallback completedCallback);
+        void Create(string xpacksFolder, ImageMapInformation map, UpdateCallback updateCallback, CompletedCallback completedCallback);
+
+        /// <summary>
+        /// Continue obtaining the image using the parameters passed in the map variable.
+        /// This function is called when loading an existing project that was saved before the background image had fully been retrieved.
+        /// Only needs to do something if you are supporting here interruptions.
+        /// </summary>
+        /// <param name="xpacksFolder">Xpacks folder where images are contained.</param>
+        /// <param name="map">Parameters that define the required image.</param>
+        /// <param name="updateCallback">Callback function to show partial image as it is slowly being gathered. No need to do anything here if your plugin is fast.</param>
+        /// <param name="completedCallback">Callback function when image is complete.</param>
+        void Resume(string xpacksFolder, UpdateCallback updateCallback, CompletedCallback completedCallback);
 
         /// <summary>
         /// The user has changed the size of the Image they want to create. You may want to respond by updating some text on the settings panel.
@@ -80,7 +94,7 @@ namespace RTBPlugins
         void SizeUpdated(int width, int height);
 
         /// <summary>
-        /// The plugin requires and uses a lognitude and latitude.
+        /// The plugin requires and uses a longitude and latitude.
         /// </summary>
         bool UsesLatitudeLongitude { get; }
         /// <summary>
@@ -93,11 +107,21 @@ namespace RTBPlugins
         double Longitude { get; }
 
         /// <summary>
+        /// The plugin can Save a partial image then later the RTB project can be loaded and the obtaining of this image can be continued.
+        /// This is useful when the obtaining of an image is a lengthy process (like getting 1,000s of images from google). The user may wish to Save, exit RTB, and then continue at a later point.
+        /// Setting this to true indicates that your plugin will support this feature.
+        /// </summary>
+        bool SupportsInterruptions { get; }
+
+        /// <summary>
         /// Set the ImageMap's CoverageX and CoverageZ in this function. Coverage is how many meters the image represents across the width (CoverageX) and height (CoverageZ).
         /// Users enter a desired width/height on RTB's front end when they create a new Venue, however the image needs to cover at least this amount.
         /// For example: The RTB Google Maps plugin makes an image which is slightly bigger than the size of the RTB Terrain mesh, so the user can add a little more terrain on each of the sides.
         /// This gets called before RTB makes a Material (on which the image will be a texture).
         /// </summary>
+        /// <param name="map">Information about the image</param>
+        /// <param name="desiredWidth">The minimum width that needs to be covered.</param>
+        /// <param name="desiredHeight">The minimum height that needs to be covered.</param>
         void SetCoverage(ref ImageMapInformation map, double desiredWidth, double desiredHeight);
 
         /// <summary>
@@ -107,8 +131,15 @@ namespace RTBPlugins
         void TargetUpdated(GameEngines target);
 
         /// <summary>
+        /// Save Venue specific settings. These settings are specific to the current project.
+        /// </summary>
+        /// <param name="filename">Image plugins will be stored in RTBProject\Plugins\Image\[YourPluginName].bin.</param>
+        /// <param name="exit">The Save is occuring right before exiting the Venue so save an partial image that can be recommenced when the Venue is next loaded.</param>
+        void Save(string filename, bool exit);
+
+        /// <summary>
         /// The user wants to exit or start a new Venue, so cancel the image processing.
-        /// RTB will not resume anything until this function completes.
+        /// RTB will not resume anything until this function completes so make sure you can respond to this quickly.
         /// </summary>
         void Stop();
     }
@@ -119,20 +150,24 @@ namespace RTBPlugins
     public class ImageMapInformation
     {
         /// <summary>
-        /// Path to the file that is to be created for the Main image.
+        /// Folder to the Xpacks.
+        /// </summary>
+        public string XPacksFolder;
+        /// <summary>
+        /// Path (relative to XpacksFolder) to the file that is to be created for the Main image.
         /// </summary>
         public string Filename;
         /// <summary>
-        /// Path to the intermediate file that could be occasionally updated to provide the user with an "in-progress" view.
+        /// Path (relative to XpacksFolder) to the intermediate file that could be occasionally updated to provide the user with an "in-progress" view.
         /// Note that this MUST be in jpg format.
         /// </summary>
         public string FilenameIntermediate;
         /// <summary>
-        /// Path to the file that is to be created for the Mask image.
+        /// Path (relative to XpacksFolder) to the file that is to be created for the Mask image.
         /// </summary>
         public string FilenameMask;
         /// <summary>
-        /// Path to the intermediate file for the Mask that could be occasionally updated to provide the user with an "in-progress" view.
+        /// Path (relative to XpacksFolder) to the intermediate file for the Mask that could be occasionally updated to provide the user with an "in-progress" view.
         /// Note that this MUST be in jpg format.
         /// </summary>
         public string FilenameIntermediateMask;
@@ -168,5 +203,39 @@ namespace RTBPlugins
         /// Height of the Mask image.
         /// </summary>
         public int HeightMask;
+
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(Filename);
+            bw.Write(FilenameIntermediate);
+            bw.Write(FilenameMask);
+            bw.Write(FilenameIntermediateMask);
+            bw.Write(Latitude);
+            bw.Write(Longitude);
+            bw.Write(CoverageX);
+            bw.Write(CoverageZ);
+            bw.Write(Width);
+            bw.Write(Height);
+            bw.Write(WidthMask);
+            bw.Write(HeightMask);
+        }
+
+        public static ImageMapInformation Read(BinaryReader br)
+        {
+            ImageMapInformation imi = new ImageMapInformation();
+            imi.Filename = br.ReadString();
+            imi.FilenameIntermediate = br.ReadString();
+            imi.FilenameMask = br.ReadString();
+            imi.FilenameIntermediateMask = br.ReadString();
+            imi.Latitude = br.ReadDouble();
+            imi.Longitude = br.ReadDouble();
+            imi.CoverageX = br.ReadDouble();
+            imi.CoverageZ = br.ReadDouble();
+            imi.Width = br.ReadInt32();
+            imi.Height = br.ReadInt32();
+            imi.WidthMask = br.ReadInt32();
+            imi.HeightMask = br.ReadInt32();
+            return imi;
+        }
     }
 }

@@ -49,6 +49,12 @@ namespace RTBPlugins
         /// <param name="latitude_longitude_pairs"></param>
         /// <returns></returns>
         List<double> Fetch(List<LatLong> latitude_longitude_pairs);
+
+        /// <summary>
+        /// Save Venue specific settings. These settings are specific to the current project.
+        /// </summary>
+        /// <param name="filename">Height plugins it will be stored in RTBProject\Plugins\Height\[YourPluginName].bin.</param>
+        void Save(string filename);
     }
 
     /// <summary>
