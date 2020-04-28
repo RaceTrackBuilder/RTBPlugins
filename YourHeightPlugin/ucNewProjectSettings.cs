@@ -23,7 +23,8 @@ namespace YourHeightPlugin
             try
             {
                 // Load the setting from last time.
-                trkHeightMultiplier.Value = Properties.Settings.Default.HeightMultiplier;
+                YourHeight.Config.TryGet<int>("HeightMultiplier", out int heightMultiplier);
+                trkHeightMultiplier.Value = heightMultiplier;
             }
             catch (Exception ex)
             {
@@ -34,7 +35,7 @@ namespace YourHeightPlugin
         internal void AcceptNewProjectSettings()
         {
             // Keep the setting for next time a New Project is created.
-            Properties.Settings.Default.HeightMultiplier = trkHeightMultiplier.Value;
+            YourHeight.Config.AddOrUpdate("HeightMultiplier", trkHeightMultiplier.Value.ToString());
         }
     }
 }

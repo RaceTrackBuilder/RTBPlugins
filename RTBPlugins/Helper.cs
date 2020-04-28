@@ -99,6 +99,7 @@ namespace RTBPlugins
                     if (type.GetInterface(pluginType.FullName) != null)
                     {
                         pluginTypes.Add(type);
+                        break; // We only accept the first one below so no need to look any further.
                     }
                 }
             }

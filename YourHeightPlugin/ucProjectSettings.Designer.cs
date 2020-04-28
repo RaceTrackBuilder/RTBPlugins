@@ -51,6 +51,7 @@
             this.trkHeightMultiplier.Size = new System.Drawing.Size(130, 45);
             this.trkHeightMultiplier.TabIndex = 48;
             this.trkHeightMultiplier.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trkHeightMultiplier.Scroll += new System.EventHandler(this.trkHeightMultiplier_Scroll);
             // 
             // ucProjectSettings
             // 

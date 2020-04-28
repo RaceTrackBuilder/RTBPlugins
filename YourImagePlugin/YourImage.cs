@@ -36,6 +36,11 @@ namespace YourImagePlugin
             get { return "Create a rainbow image."; }
         }
 
+        public void Initialize()
+        {
+            // Nothing required.
+        }
+
         public bool UsesLatitudeLongitude { get { return false; } }
         public double Latitude { get { return 0; } }
         public double Longitude { get { return 0; } }
@@ -247,11 +252,6 @@ namespace YourImagePlugin
         public void AcceptProjectSettings()
         {
             // Nothing to do.
-        }
-
-        public void TransferGoogleAPI(string googleAPI)
-        {
-            // do nothing.
         }
 
         public void TargetUpdated(GameEngines target)

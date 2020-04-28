@@ -62,15 +62,15 @@ namespace RTBPlugins
         void AcceptProjectSettings();
 
         /// <summary>
-        /// For transferring the current API stored in RTB into the plugin. This will be deprecated in a future release. For now just create an empty function.
-        /// </summary>
-        void TransferGoogleAPI(string googleAPI);
-
-        /// <summary>
         /// List of Game Engines that this plugin will support.
         /// </summary>
         /// <returns></returns>
         List<GameEngines> GetSupportedEngines();
+
+        /// <summary>
+        /// Initialise the plugin. This is called when the plugin is first loaded.
+        /// </summary>
+        void Initialize();
 
         /// <summary>
         /// Load Venue specific settings from your own binary file. These settings are specific to the current project and will be stored inside a file named "[YourPluginName].bin".

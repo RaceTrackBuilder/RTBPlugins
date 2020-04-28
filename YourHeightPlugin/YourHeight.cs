@@ -12,6 +12,17 @@ namespace YourHeightPlugin
 {
     public class YourHeight : IPluginHeight
     {
+        static MiniConfig config = null;
+        internal static MiniConfig Config
+        {
+            get
+            {
+                if (config == null)
+                    config = new MiniConfig(typeof(MiniConfig).Assembly.Location + ".config");
+                return config;
+            }
+        }
+
         /// <summary>
         /// User control for displaying the slider on the RTB's New Venue window.
         /// </summary>
@@ -38,6 +49,11 @@ namespace YourHeightPlugin
         public string Description { get { return "Your Fantastic Height Plugin"; } }
 
         public string About { get { return "Initiate with semi-random heights."; } }
+
+        public void Initialize()
+        {
+            // Nothing required.
+        }
 
         public void RenderNewProjectSettings(Panel panel)
         {
@@ -68,7 +84,7 @@ namespace YourHeightPlugin
         {
             // Save the Noise setting.
             ucNewProjectSettings.AcceptNewProjectSettings();
-            Properties.Settings.Default.Save();
+            Config.Save();
 
             HeightMultiplier = ucNewProjectSettings.HeightMultiplier;
         }
@@ -76,11 +92,6 @@ namespace YourHeightPlugin
         public void AcceptProjectSettings()
         {
             HeightMultiplier = ucProjectSettings.HeightMultiplier;
-        }
-
-        public void TransferGoogleAPI(string googleAPI)
-        {
-            // Nothing to do.
         }
 
         public double Fetch(double latitude_or_z, double longitude_or_x)
